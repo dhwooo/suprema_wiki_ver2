@@ -1,0 +1,113 @@
+import type { ReactNode } from "react";
+import Link from "next/link";
+import { ArrowUpRight, ChevronDown, Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+
+type NavKey = "home" | "api" | "gsdk" | "biostar" | "reference";
+
+const navItems: { key: NavKey; label: string; href: string }[] = [
+  { key: "home", label: "Home", href: "/" },
+];
+
+const gsdkLinks = [
+  { label: "Overview", href: "/gsdk", description: "Gateway, gRPC, SDK 구조" },
+  { label: "API Reference", href: "/api", description: "실제 G-SDK API와 메서드 색인" },
+  { label: "Examples", href: "/reference", description: "구현 순서와 운영 예제" },
+];
+
+const biostarLinks = [
+  { label: "Overview", href: "/biostar", description: "BioStar 2 / BioStar X 개발 축" },
+  { label: "BioStar 2", href: "/biostar/2", description: "BioStar 2 New Local API" },
+  { label: "BioStar 2 API Reference", href: "/biostar/2/api-reference", description: "REST/JSON 서버 API 색인" },
+  { label: "BioStar 2 Examples", href: "/biostar/2/examples", description: "로그인, 사용자, 이벤트 예제" },
+  { label: "BioStar X", href: "/biostar/x", description: "BioStar X REST API" },
+  { label: "BioStar X API Reference", href: "/biostar/x/api-reference", description: "장치, 단말, 사용자, 바이오인식 API" },
+  { label: "BioStar X Examples", href: "/biostar/x/examples", description: "통합 시나리오와 운영 패턴" },
+];
+
+export function SiteHeader({ active, searchSlot }: { active: NavKey; searchSlot?: ReactNode }) {
+  return (
+    <header className="sticky top-0 z-40 grid h-[74px] grid-cols-[minmax(260px,1fr)_auto_minmax(320px,1fr)] items-center gap-6 border-b border-neutral-900 bg-black/85 px-7 backdrop-blur-xl max-[980px]:grid-cols-[1fr_auto] max-[760px]:static max-[760px]:h-auto max-[760px]:grid-cols-1 max-[760px]:px-5 max-[760px]:py-4">
+      <Link href="/" className="flex min-w-0 items-center gap-3">
+        <span className="text-[24px] font-[560] tracking-normal text-neutral-100">Suprema Developer</span>
+        <span className="h-4 w-px bg-neutral-700" />
+        <span className="whitespace-nowrap text-sm font-normal text-neutral-400">Docs</span>
+      </Link>
+      <nav className="flex items-center justify-center gap-1 text-[15px] text-neutral-300 max-[980px]:hidden" aria-label="주요 탐색">
+        {navItems.map((item) => (
+          <Link
+            className={cn(
+              "rounded-md px-3 py-2 hover:bg-white/8 hover:text-white",
+              active === item.key && "bg-white/10 text-white",
+            )}
+            href={item.href}
+            key={item.key}
+          >
+            {item.label}
+          </Link>
+        ))}
+        <ProductMenu active={active === "gsdk" || active === "api" || active === "reference"} label="GSDK" links={gsdkLinks} />
+        <ProductMenu active={active === "biostar"} label="BioStar" links={biostarLinks} />
+      </nav>
+      <div className="flex justify-end gap-3 max-[760px]:justify-stretch">
+        {searchSlot ?? <HeaderSearch />}
+        <Button asChild className="max-[760px]:hidden">
+          <Link href="/api">
+            API Reference <ArrowUpRight size={15} />
+          </Link>
+        </Button>
+      </div>
+    </header>
+  );
+}
+
+function ProductMenu({
+  active,
+  label,
+  links,
+}: {
+  active: boolean;
+  label: string;
+  links: { label: string; href: string; description: string; external?: boolean }[];
+}) {
+  return (
+    <div className="group relative">
+      <button
+        className={cn(
+          "inline-flex items-center gap-1 rounded-md px-3 py-2 text-[15px] hover:bg-white/8 hover:text-white",
+          active && "bg-white/10 text-white",
+        )}
+        type="button"
+      >
+        {label}
+        <ChevronDown size={14} />
+      </button>
+      <div className="invisible absolute left-0 top-full z-50 w-[310px] pt-2 opacity-0 transition group-hover:visible group-hover:opacity-100">
+        <div className="rounded-lg border border-white/12 bg-neutral-950 p-2 shadow-2xl shadow-black/60">
+          {links.map((link) => {
+            const content = (
+              <>
+                <span className="flex items-center justify-between gap-3 text-[15px] font-medium text-neutral-100">
+                  {link.label}
+                </span>
+                <span className="mt-1 block text-sm leading-5 text-neutral-400">{link.description}</span>
+              </>
+            );
+            return <Link className="block rounded-md px-3 py-2.5 hover:bg-white/8" href={link.href} key={link.href}>{content}</Link>;
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HeaderSearch() {
+  return (
+    <form action="/" className="flex h-10 w-[250px] items-center gap-2 rounded-full border border-white/10 bg-neutral-900 px-4 text-neutral-500 max-[760px]:w-full">
+      <Search size={16} />
+      <Input name="q" placeholder="문서 검색" />
+    </form>
+  );
+}

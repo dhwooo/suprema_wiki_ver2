@@ -1,0 +1,13 @@
+.next
+node_modules
+out
+.DS_Store
+*.log
+.env*
+
+# tooling / agent state
+.omc
+.omx
+.omf
+.playwright-mcp
+next-env.d.ts
