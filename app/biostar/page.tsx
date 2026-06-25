@@ -11,27 +11,27 @@ export const metadata = {
 
 export default function BioStarPage() {
   return (
-    <main className="min-h-screen bg-black text-neutral-100">
+    <main className="min-h-screen bg-bg text-text">
       <SiteHeader active="biostar" />
       <div className="grid grid-cols-[250px_minmax(0,1fr)] max-[820px]:block">
         <aside className="sticky top-[74px] h-[calc(100vh-74px)] overflow-auto px-7 py-6 max-[820px]:static max-[820px]:h-auto max-[820px]:px-5 max-[820px]:py-3">
-          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-neutral-600">BioStar</p>
-          <h2 className="mb-2 text-[17px] font-medium text-neutral-200">Server API</h2>
-          <p className="mb-6 text-sm leading-6 text-neutral-500">BioStar 서버와 REST/JSON으로 통합하는 개발 축입니다.</p>
+          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-faint">BioStar</p>
+          <h2 className="mb-2 text-[17px] font-medium text-secondary">Server API</h2>
+          <p className="mb-6 text-sm leading-6 text-muted">BioStar 서버와 REST/JSON으로 통합하는 개발 축입니다.</p>
           <nav className="space-y-1 text-[15px]">
-            <Link className="block rounded-md px-2 py-1.5 text-neutral-300 hover:bg-white/8" href="/biostar/2">BioStar 2</Link>
-            <Link className="block rounded-md px-2 py-1.5 text-neutral-300 hover:bg-white/8" href="/biostar/2/api-reference">BioStar 2 API Reference</Link>
-            <Link className="block rounded-md px-2 py-1.5 text-neutral-300 hover:bg-white/8" href="/biostar/2/examples">BioStar 2 Examples</Link>
-            <Link className="block rounded-md px-2 py-1.5 text-neutral-300 hover:bg-white/8" href="/biostar/x">BioStar X</Link>
-            <Link className="block rounded-md px-2 py-1.5 text-neutral-300 hover:bg-white/8" href="/biostar/x/api-reference">BioStar X API Reference</Link>
-            <Link className="block rounded-md px-2 py-1.5 text-neutral-300 hover:bg-white/8" href="/biostar/x/examples">BioStar X Examples</Link>
+            <Link className="block rounded-md px-2 py-1.5 text-secondary hover:bg-hover" href="/biostar/2">BioStar 2</Link>
+            <Link className="block rounded-md px-2 py-1.5 text-secondary hover:bg-hover" href="/biostar/2/api-reference">BioStar 2 API Reference</Link>
+            <Link className="block rounded-md px-2 py-1.5 text-secondary hover:bg-hover" href="/biostar/2/examples">BioStar 2 Examples</Link>
+            <Link className="block rounded-md px-2 py-1.5 text-secondary hover:bg-hover" href="/biostar/x">BioStar X</Link>
+            <Link className="block rounded-md px-2 py-1.5 text-secondary hover:bg-hover" href="/biostar/x/api-reference">BioStar X API Reference</Link>
+            <Link className="block rounded-md px-2 py-1.5 text-secondary hover:bg-hover" href="/biostar/x/examples">BioStar X Examples</Link>
           </nav>
         </aside>
 
         <section className="w-full max-w-[1540px] px-9 pb-20 pt-8 max-[820px]:px-5">
-          <p className="mb-3 text-xs font-medium uppercase tracking-wide text-neutral-600">Server REST API</p>
-          <h1 className="mb-4 text-[42px] font-[560] leading-tight text-neutral-100 max-[760px]:text-[32px]">BioStar</h1>
-          <p className="max-w-3xl text-[17px] leading-8 text-neutral-400">
+          <p className="mb-3 text-xs font-medium uppercase tracking-wide text-faint">Server REST API</p>
+          <h1 className="mb-4 text-[42px] font-[560] leading-tight text-text max-[760px]:text-[32px]">BioStar</h1>
+          <p className="max-w-3xl text-[17px] leading-8 text-muted">
             BioStar API는 BioStar 서버의 사용자, 장치, 출입통제, 이벤트 데이터를 외부 시스템과 연결하는 REST/JSON 기반 API 축입니다.
           </p>
 
@@ -58,14 +58,14 @@ export default function BioStarPage() {
 
 function FactPanel({ facts, title }: { facts: string[]; title: string }) {
   return (
-    <section className="rounded-lg border border-white/10 bg-neutral-950/70 p-5">
-            <div className="mb-5 flex items-center gap-2 text-neutral-500">
+    <section className="rounded-lg border border-edge bg-surface/70 p-5">
+            <div className="mb-5 flex items-center gap-2 text-muted">
               <Database size={17} />
         <p className="text-sm">{title}</p>
             </div>
       <div className="grid gap-3">
         {facts.map((fact) => (
-                <div className="rounded-lg border border-white/8 bg-black p-4 text-[15px] leading-6 text-neutral-300" key={fact}>{fact}</div>
+                <div className="rounded-lg border border-edge bg-bg p-4 text-[15px] leading-6 text-secondary" key={fact}>{fact}</div>
               ))}
             </div>
           </section>
@@ -74,9 +74,9 @@ function FactPanel({ facts, title }: { facts: string[]; title: string }) {
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-white/10 bg-neutral-950/70 p-4">
-      <p className="mb-2 text-sm text-neutral-500">{label}</p>
-      <p className="text-3xl font-[540] text-neutral-100">{value}</p>
+    <div className="rounded-lg border border-edge bg-surface/70 p-4">
+      <p className="mb-2 text-sm text-muted">{label}</p>
+      <p className="text-3xl font-[540] text-text">{value}</p>
     </div>
   );
 }
@@ -92,11 +92,11 @@ function HubCard({
   icon: ReactNode;
   title: string;
 }) {
-  const className = "block rounded-lg border border-white/10 bg-neutral-950/70 p-5 transition-colors hover:border-white/20 hover:bg-white/[0.03]";
+  const className = "block rounded-lg border border-edge bg-surface/70 p-5 transition-colors hover:border-edge-strong hover:bg-hover";
   const content = (
     <>
-      <div className="mb-4 flex items-center gap-2 text-neutral-500">{icon}<span className="text-sm">{title}</span></div>
-      <p className="text-[17px] font-medium leading-7 text-neutral-200">{description}</p>
+      <div className="mb-4 flex items-center gap-2 text-muted">{icon}<span className="text-sm">{title}</span></div>
+      <p className="text-[17px] font-medium leading-7 text-secondary">{description}</p>
     </>
   );
   return <Link className={className} href={href}>{content}</Link>;

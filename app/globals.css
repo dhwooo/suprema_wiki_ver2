@@ -1,13 +1,63 @@
 @import "tailwindcss";
 
-:root {
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* 다크가 기본값(:root). next-themes가 html에 .light/.dark 클래스를 토글합니다. */
+:root,
+.dark {
   color-scheme: dark;
   --background: #000;
   --foreground: #f2f2f2;
+  --bg: #000000;
+  --surface: #0b0b0b;
+  --raised: #161616;
+  --hover: rgb(255 255 255 / 0.08);
+  --active: rgb(255 255 255 / 0.1);
+  --edge: rgb(255 255 255 / 0.1);
+  --edge-strong: rgb(255 255 255 / 0.2);
+  --text: #f2f2f2;
+  --secondary: #d4d4d4;
+  --muted: #a3a3a3;
+  --faint: #6b6b6b;
+  --link: #7dd3fc;
+  --code-bg: #0a0a0a;
+  --shadow: rgb(0 0 0 / 0.6);
+}
+
+.light {
+  color-scheme: light;
+  --background: #fff;
+  --foreground: #18181b;
+  --bg: #ffffff;
+  --surface: #fafafa;
+  --raised: #f1f1f3;
+  --hover: rgb(0 0 0 / 0.05);
+  --active: rgb(0 0 0 / 0.08);
+  --edge: rgb(0 0 0 / 0.1);
+  --edge-strong: rgb(0 0 0 / 0.16);
+  --text: #18181b;
+  --secondary: #3f3f46;
+  --muted: #6b7280;
+  --faint: #9ca3af;
+  --link: #0284c7;
+  --code-bg: #f6f8fa;
+  --shadow: rgb(0 0 0 / 0.12);
 }
 
 @theme inline {
   --font-sans: "OpenAI Sans", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-hover: var(--hover);
+  --color-active: var(--active);
+  --color-edge: var(--edge);
+  --color-edge-strong: var(--edge-strong);
+  --color-text: var(--text);
+  --color-secondary: var(--secondary);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-link: var(--link);
 }
 
 * {
@@ -15,7 +65,7 @@
 }
 
 html {
-  background: #000;
+  background: var(--bg);
   scroll-behavior: smooth;
 }
 
@@ -41,6 +91,156 @@ a {
   text-decoration: none;
 }
 
+.coll-icon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 13px;
+  border: 1px solid var(--edge);
+  box-shadow: inset 0 1px 0 var(--hover);
+}
+
+.gsdk-prose a,
+.gsdk-ref {
+  color: var(--link);
+}
+
+.gsdk-prose a:hover,
+.gsdk-ref:hover {
+  text-decoration: underline;
+}
+
+.gsdk-prose strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.gsdk-prose p {
+  margin: 0 0 0.6rem;
+}
+
+.gsdk-prose ul,
+.gsdk-prose ol {
+  margin: 0 0 0.6rem;
+  padding-left: 1.2rem;
+}
+
+.gsdk-code {
+  border-radius: 4px;
+  background: var(--hover);
+  padding: 0.1em 0.36em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.86em;
+  color: var(--secondary);
+}
+
+.gsdk-pre {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--edge);
+  background: var(--code-bg);
+  padding: 0.9rem 1rem;
+  font-size: 13px;
+}
+
+/* BioStar 레퍼런스 본문(BS2: HTML / BSX: 마크다운 변환) */
+.bs-prose a {
+  color: var(--link);
+}
+.bs-prose a:hover {
+  text-decoration: underline;
+}
+.bs-prose strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.bs-prose p {
+  margin: 0 0 0.6rem;
+}
+.bs-prose ul,
+.bs-prose ol {
+  margin: 0 0 0.6rem;
+  padding-left: 1.2rem;
+  list-style: revert;
+}
+.bs-prose h3,
+.bs-prose h4,
+.bs-prose h5,
+.bs-prose h6 {
+  margin: 1.1rem 0 0.5rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.bs-prose h3 {
+  font-size: 1.05rem;
+}
+.bs-prose h4,
+.bs-prose h5,
+.bs-prose h6 {
+  font-size: 0.95rem;
+}
+.bs-prose code {
+  border-radius: 4px;
+  background: var(--hover);
+  padding: 0.1em 0.36em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.86em;
+  color: var(--secondary);
+}
+.bs-prose pre {
+  overflow-x: auto;
+  margin: 0 0 0.7rem;
+  border-radius: 8px;
+  border: 1px solid var(--edge);
+  background: var(--code-bg);
+  padding: 0.9rem 1rem;
+  font-size: 13px;
+}
+.bs-prose pre code {
+  background: transparent;
+  padding: 0;
+}
+.bs-prose table {
+  width: 100%;
+  margin: 0.3rem 0 0.9rem;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.bs-prose th,
+.bs-prose td {
+  border: 1px solid var(--edge);
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+  vertical-align: top;
+}
+.bs-prose th {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.tok-key {
+  color: #c4b5fd;
+}
+
+.tok-type {
+  color: #7dd3e8;
+}
+
+.tok-num {
+  color: #fca5a5;
+}
+
+.tok-comment {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.tok-str {
+  color: #9ece6a;
+}
+
 .collection-icon {
   display: grid;
   width: 76px;
@@ -48,8 +248,8 @@ a {
   flex: 0 0 auto;
   place-items: center;
   border-radius: 14px;
-  border: 1px solid rgb(255 255 255 / 0.11);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.13);
+  border: 1px solid var(--edge);
+  box-shadow: inset 0 1px 0 var(--hover);
 }
 
 .collection-icon-cyan {
@@ -78,7 +278,7 @@ a {
   height: 198px;
   overflow: hidden;
   border-radius: 8px;
-  border: 1px solid rgb(255 255 255 / 0.08);
+  border: 1px solid var(--edge);
 }
 
 .thumb-noise::before {

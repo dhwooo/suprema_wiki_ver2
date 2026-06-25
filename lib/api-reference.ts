@@ -1,3 +1,5 @@
+import type { Accent } from "@/lib/docs";
+
 export type ApiGroup = {
   slug: string;
   title: string;
@@ -145,6 +147,108 @@ export const apiGroups: ApiGroup[] = [
 ];
 
 export const apiItems = apiGroups.flatMap((group) => group.items.map((item) => ({ ...item, group: group.title })));
+
+export type ApiCollectionIcon =
+  | "network"
+  | "device"
+  | "identity"
+  | "access"
+  | "events"
+  | "zones"
+  | "config"
+  | "server";
+
+export type ApiCollection = {
+  slug: string;
+  title: string;
+  description: string;
+  icon: ApiCollectionIcon;
+  accent: Accent;
+  apis: string[]; // 이 Collection에 속한 API slug 목록(작업 흐름 순서)
+};
+
+// 8개 시나리오 기반 Collections — /api 상단 카드, 좌측 메뉴, 하단 색인을 모두 구동합니다.
+export const apiCollections: ApiCollection[] = [
+  {
+    slug: "connectivity",
+    title: "연결 & Gateway",
+    description: "장치를 찾아 연결하고 Gateway·tenant로 운영합니다.",
+    icon: "network",
+    accent: "cyan",
+    apis: ["connect", "connect-master", "gateway", "login", "tenant"],
+  },
+  {
+    slug: "device",
+    title: "장치 관리 & 펌웨어",
+    description: "장치 정보, 펌웨어, 네트워크, 시간을 관리합니다.",
+    icon: "device",
+    accent: "blue",
+    apis: ["device", "device-license", "network", "time"],
+  },
+  {
+    slug: "identity",
+    title: "사용자 & 인증수단",
+    description: "사용자와 카드·지문·얼굴 인증수단을 등록합니다.",
+    icon: "identity",
+    accent: "cyan",
+    apis: ["user", "card", "finger", "face", "auth"],
+  },
+  {
+    slug: "access",
+    title: "출입 제어",
+    description: "문, 엘리베이터, 스케줄로 출입 정책을 구성합니다.",
+    icon: "access",
+    accent: "violet",
+    apis: ["access", "door", "lift", "schedule"],
+  },
+  {
+    slug: "events",
+    title: "이벤트 · 모니터링 · 근태",
+    description: "이벤트 로그, 실시간 모니터링, 근태를 수집합니다.",
+    icon: "events",
+    accent: "blue",
+    apis: ["event", "ta", "thermal"],
+  },
+  {
+    slug: "zones",
+    title: "Zone 자동화",
+    description: "anti-passback, 화재·침입 등 zone 규칙을 설정합니다.",
+    icon: "zones",
+    accent: "violet",
+    apis: [
+      "anti-passback-zone",
+      "timed-anti-passback-zone",
+      "intrusion-alarm-zone",
+      "fire-alarm-zone",
+      "scheduled-lock-zone",
+      "interlock-zone",
+      "lift-zone",
+    ],
+  },
+  {
+    slug: "config",
+    title: "장치 설정 & 인터페이스",
+    description: "디스플레이, RS485, Wiegand 등 장치 환경을 설정합니다.",
+    icon: "config",
+    accent: "blue",
+    apis: ["display", "rs485", "wiegand", "input", "status", "system", "rtsp", "voip", "action"],
+  },
+  {
+    slug: "server",
+    title: "서버 연동 & 저수준",
+    description: "서버 매칭과 운영자·저수준 통신을 연동합니다.",
+    icon: "server",
+    accent: "burgundy",
+    apis: ["server", "operator", "udp", "udp-master", "admin", "err"],
+  },
+];
+
+// gRPC, Gateway 모델 등 모든 API의 공통 기초 개념(8개 Collection에 속하지 않음)
+export const apiBasics = ["grpc", "gateway-model", "api-definition", "multi-command"];
+
+export function getCollectionApis(collection: ApiCollection) {
+  return collection.apis.map((slug) => getApiItem(slug)).filter((item): item is ApiItem => Boolean(item));
+}
 
 export const apiFunctionGroups: ApiFunctionGroup[] = [
   {

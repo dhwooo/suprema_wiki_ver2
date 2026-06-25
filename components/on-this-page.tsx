@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Copy, FileDown } from "lucide-react";
+import { Check, Copy, FileDown } from "lucide-react";
 import type { TocItem } from "@/lib/toc";
 import { cn } from "@/lib/utils";
 
@@ -41,20 +41,25 @@ export function OnThisPage({ items }: { items: TocItem[] }) {
       setActiveId((previous) => (previous === current ? previous : current));
     };
 
-    const tick = () => {
-      if (window.scrollY !== lastScrollY) {
-        lastScrollY = window.scrollY;
+    let ticking = false;
+    const onScroll = () => {
+      if (window.scrollY === lastScrollY) return;
+      lastScrollY = window.scrollY;
+      if (ticking) return;
+      ticking = true;
+      frame = requestAnimationFrame(() => {
         updateActiveId();
-      }
-      frame = requestAnimationFrame(tick);
+        ticking = false;
+      });
     };
 
     updateActiveId();
-    frame = requestAnimationFrame(tick);
+    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", updateActiveId);
 
     return () => {
       cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", updateActiveId);
     };
   }, [flatItems]);
@@ -86,9 +91,9 @@ export function OnThisPage({ items }: { items: TocItem[] }) {
     <aside className="sticky top-[98px] h-[calc(100vh-98px)] overflow-auto px-7 py-8 max-[1180px]:hidden">
       <p className="sr-only">On this page</p>
       <nav className="relative pl-6" aria-label="현재 페이지 목차">
-        <span className="absolute bottom-0 left-0 top-0 w-px bg-white/18" aria-hidden="true" />
+        <span className="absolute bottom-0 left-0 top-0 w-px bg-active" aria-hidden="true" />
         <span
-          className="absolute left-0 w-[3px] rounded-full bg-white transition-[transform,height,opacity] duration-300 ease-out"
+          className="absolute left-0 w-[3px] rounded-full bg-text transition-[transform,height,opacity] duration-300 ease-out"
           aria-hidden="true"
           style={{
             height: indicator.height,
@@ -106,7 +111,7 @@ export function OnThisPage({ items }: { items: TocItem[] }) {
                   "block py-1.5 transition-colors duration-200",
                   item.depth === 0 ? "text-[15px]" : "text-[13px]",
                   item.depth > 0 && "pl-3",
-                  isActive ? "font-medium text-neutral-100" : "text-neutral-500 hover:text-neutral-200",
+                  isActive ? "font-medium text-text" : "text-muted hover:text-secondary",
                 )}
                 href={`#${item.id}`}
                 key={`${item.depth}-${item.id}`}
@@ -121,14 +126,14 @@ export function OnThisPage({ items }: { items: TocItem[] }) {
         </div>
       </nav>
 
-      <div className="mt-8 inline-flex h-12 overflow-hidden rounded-[18px] border border-white/30 bg-neutral-900/80 text-[15px] font-medium text-neutral-100 shadow-2xl shadow-black/40">
-        <button className="inline-flex items-center gap-2 px-4 transition-colors hover:bg-white/8" onClick={copyPage} type="button">
-          <Copy size={19} />
-          {copied ? "Copied" : "Copy page"}
+      <div className="mt-7 flex flex-col gap-0.5 border-t border-edge pt-4">
+        <button className="flex items-center gap-2 rounded-md px-2 py-1.5 text-[13px] text-muted transition-colors hover:bg-hover hover:text-secondary" onClick={copyPage} type="button">
+          {copied ? <Check size={14} /> : <Copy size={14} />}
+          {copied ? "링크 복사됨" : "페이지 링크 복사"}
         </button>
-        <button className="inline-flex items-center gap-2 border-l border-white/25 px-4 transition-colors hover:bg-white/8" onClick={exportPdf} type="button">
-          <FileDown size={18} />
-          Export as PDF
+        <button className="flex items-center gap-2 rounded-md px-2 py-1.5 text-[13px] text-muted transition-colors hover:bg-hover hover:text-secondary" onClick={exportPdf} type="button">
+          <FileDown size={14} />
+          PDF로 내보내기
         </button>
       </div>
     </aside>

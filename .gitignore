@@ -11,3 +11,6 @@ out
 .omf
 .playwright-mcp
 next-env.d.ts
+
+# work artifacts
+card-detail-current.png

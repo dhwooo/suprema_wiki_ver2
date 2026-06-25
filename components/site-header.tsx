@@ -1,20 +1,20 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ArrowUpRight, ChevronDown, Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { ChevronDown } from "lucide-react";
+import { SearchDialog } from "@/components/search-dialog";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 
-type NavKey = "home" | "api" | "gsdk" | "biostar" | "reference";
+type NavKey = "home" | "api" | "gsdk" | "biostar" | "reference" | "examples";
 
 const navItems: { key: NavKey; label: string; href: string }[] = [
   { key: "home", label: "Home", href: "/" },
 ];
 
 const gsdkLinks = [
-  { label: "Overview", href: "/gsdk", description: "Gateway, gRPC, SDK 구조" },
-  { label: "API Reference", href: "/api", description: "실제 G-SDK API와 메서드 색인" },
-  { label: "Examples", href: "/reference", description: "구현 순서와 운영 예제" },
+  { label: "Guides", href: "/gsdk", description: "Gateway, gRPC, SDK 구조와 개념" },
+  { label: "API Reference", href: "/api", description: "서비스·메서드·타입 레퍼런스" },
+  { label: "Examples", href: "/examples", description: "Python 단계별 사용 예제" },
 ];
 
 const biostarLinks = [
@@ -29,18 +29,18 @@ const biostarLinks = [
 
 export function SiteHeader({ active, searchSlot }: { active: NavKey; searchSlot?: ReactNode }) {
   return (
-    <header className="sticky top-0 z-40 grid h-[74px] grid-cols-[minmax(260px,1fr)_auto_minmax(320px,1fr)] items-center gap-6 border-b border-neutral-900 bg-black/85 px-7 backdrop-blur-xl max-[980px]:grid-cols-[1fr_auto] max-[760px]:static max-[760px]:h-auto max-[760px]:grid-cols-1 max-[760px]:px-5 max-[760px]:py-4">
+    <header className="sticky top-0 z-40 grid h-[74px] grid-cols-[minmax(260px,1fr)_auto_minmax(320px,1fr)] items-center gap-6 border-b border-edge bg-bg/85 px-7 backdrop-blur-xl max-[980px]:grid-cols-[1fr_auto] max-[760px]:static max-[760px]:h-auto max-[760px]:grid-cols-1 max-[760px]:px-5 max-[760px]:py-4">
       <Link href="/" className="flex min-w-0 items-center gap-3">
-        <span className="text-[24px] font-[560] tracking-normal text-neutral-100">Suprema Developer</span>
-        <span className="h-4 w-px bg-neutral-700" />
-        <span className="whitespace-nowrap text-sm font-normal text-neutral-400">Docs</span>
+        <span className="text-[24px] font-[560] tracking-normal text-text">Suprema Developer</span>
+        <span className="h-4 w-px bg-raised" />
+        <span className="whitespace-nowrap text-sm font-normal text-muted">Docs</span>
       </Link>
-      <nav className="flex items-center justify-center gap-1 text-[15px] text-neutral-300 max-[980px]:hidden" aria-label="주요 탐색">
+      <nav className="flex items-center justify-center gap-1 text-[15px] text-secondary max-[980px]:hidden" aria-label="주요 탐색">
         {navItems.map((item) => (
           <Link
             className={cn(
-              "rounded-md px-3 py-2 hover:bg-white/8 hover:text-white",
-              active === item.key && "bg-white/10 text-white",
+              "rounded-md px-3 py-2 hover:bg-hover hover:text-text",
+              active === item.key && "bg-active text-text",
             )}
             href={item.href}
             key={item.key}
@@ -48,16 +48,13 @@ export function SiteHeader({ active, searchSlot }: { active: NavKey; searchSlot?
             {item.label}
           </Link>
         ))}
-        <ProductMenu active={active === "gsdk" || active === "api" || active === "reference"} label="GSDK" links={gsdkLinks} />
+        <ProductMenu active={active === "gsdk" || active === "api" || active === "reference" || active === "examples"} label="GSDK" links={gsdkLinks} />
         <ProductMenu active={active === "biostar"} label="BioStar" links={biostarLinks} />
       </nav>
-      <div className="flex justify-end gap-3 max-[760px]:justify-stretch">
-        {searchSlot ?? <HeaderSearch />}
-        <Button asChild className="max-[760px]:hidden">
-          <Link href="/api">
-            API Reference <ArrowUpRight size={15} />
-          </Link>
-        </Button>
+      <div className="flex items-center justify-end gap-3 max-[760px]:justify-stretch">
+        {searchSlot ?? <SearchDialog />}
+        {searchSlot ? <SearchDialog showTrigger={false} /> : null}
+        <ThemeToggle />
       </div>
     </header>
   );
@@ -76,8 +73,8 @@ function ProductMenu({
     <div className="group relative">
       <button
         className={cn(
-          "inline-flex items-center gap-1 rounded-md px-3 py-2 text-[15px] hover:bg-white/8 hover:text-white",
-          active && "bg-white/10 text-white",
+          "inline-flex items-center gap-1 rounded-md px-3 py-2 text-[15px] hover:bg-hover hover:text-text",
+          active && "bg-active text-text",
         )}
         type="button"
       >
@@ -85,29 +82,20 @@ function ProductMenu({
         <ChevronDown size={14} />
       </button>
       <div className="invisible absolute left-0 top-full z-50 w-[310px] pt-2 opacity-0 transition group-hover:visible group-hover:opacity-100">
-        <div className="rounded-lg border border-white/12 bg-neutral-950 p-2 shadow-2xl shadow-black/60">
+        <div className="rounded-lg border border-edge bg-surface p-2 shadow-2xl shadow-black/60">
           {links.map((link) => {
             const content = (
               <>
-                <span className="flex items-center justify-between gap-3 text-[15px] font-medium text-neutral-100">
+                <span className="flex items-center justify-between gap-3 text-[15px] font-medium text-text">
                   {link.label}
                 </span>
-                <span className="mt-1 block text-sm leading-5 text-neutral-400">{link.description}</span>
+                <span className="mt-1 block text-sm leading-5 text-muted">{link.description}</span>
               </>
             );
-            return <Link className="block rounded-md px-3 py-2.5 hover:bg-white/8" href={link.href} key={link.href}>{content}</Link>;
+            return <Link className="block rounded-md px-3 py-2.5 hover:bg-hover" href={link.href} key={link.href}>{content}</Link>;
           })}
         </div>
       </div>
     </div>
-  );
-}
-
-function HeaderSearch() {
-  return (
-    <form action="/" className="flex h-10 w-[250px] items-center gap-2 rounded-full border border-white/10 bg-neutral-900 px-4 text-neutral-500 max-[760px]:w-full">
-      <Search size={16} />
-      <Input name="q" placeholder="문서 검색" />
-    </form>
   );
 }
