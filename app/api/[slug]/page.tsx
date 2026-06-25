@@ -7,6 +7,7 @@ import { SiteHeader } from "@/components/site-header";
 import { ApiDocBody } from "@/components/api-doc";
 import { ApiSidebar } from "@/components/api-sidebar";
 import { apiItems, getApiDetail, getApiFunctionGroups } from "@/lib/api-reference";
+import { getTutorialsForApi } from "@/lib/tutorials";
 import { getApiDoc, type ApiDoc } from "@/lib/gsdk-doc";
 import { tocId } from "@/lib/toc";
 import type { TocItem } from "@/lib/toc";
@@ -73,6 +74,7 @@ export default async function ApiDetailPage({ params }: ApiDetailPageProps) {
     : (item.methodGroups?.reduce((sum, group) => sum + group.methods.length, 0) ?? 0);
   const typeCount = apiDoc?.typeNames.length ?? 0;
   const functionGroups = getApiFunctionGroups(item.slug);
+  const relatedTutorials = getTutorialsForApi(item.slug);
   const tocItems = buildToc(apiDoc, functionGroups.length > 0, !apiDoc, item.methodGroups);
 
   return (
@@ -110,16 +112,29 @@ export default async function ApiDetailPage({ params }: ApiDetailPageProps) {
               </div>
             </dl>
           </section>
-          <Link
-            href="/reference"
-            className="group rounded-lg border border-edge bg-surface p-5 transition-colors hover:border-edge-strong hover:bg-hover"
-          >
+          <section className="rounded-lg border border-edge bg-surface p-5">
             <div className="mb-4 flex items-center gap-2 text-muted">
               <BookOpen size={16} />
-              <p className="text-sm">Usage Reference</p>
+              <p className="text-sm">관련 예제</p>
             </div>
-            <p className="text-[17px] font-medium text-secondary group-hover:text-text">이 API를 언제 어떤 순서로 쓰는지는 Reference 사용 예에서 확인합니다.</p>
-          </Link>
+            {relatedTutorials.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {relatedTutorials.map((tutorial) => (
+                  <Link
+                    key={tutorial.slug}
+                    href={`/examples/${tutorial.slug}`}
+                    className="rounded-full border border-edge bg-bg px-3 py-1.5 text-[13px] font-medium text-secondary transition-colors hover:border-edge-strong hover:text-text"
+                  >
+                    {tutorial.title}
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <Link href="/examples" className="text-[15px] font-medium text-secondary hover:text-text">
+                Python 예제 전체 보기 →
+              </Link>
+            )}
+          </section>
         </div>
         </section>
 

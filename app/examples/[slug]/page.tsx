@@ -86,6 +86,32 @@ export default async function ExampleDetailPage({ params }: ExampleDetailPagePro
             ) : null}
           </section>
 
+          <div className="mb-7 rounded-lg border border-edge bg-surface p-5">
+            <p className="mb-3 text-sm font-medium text-secondary">시작 전 준비</p>
+            <ol className="grid gap-2 text-[14px] leading-6 text-muted">
+              <li className="flex gap-2"><span className="shrink-0 text-faint">1.</span><span>Gateway 설치 및 실행 (Device 또는 Master Gateway)</span></li>
+              <li className="flex gap-2"><span className="shrink-0 text-faint">2.</span><span>Python 클라이언트 라이브러리 설치</span></li>
+              <li className="flex gap-2"><span className="shrink-0 text-faint">3.</span><span>Gateway 루트 인증서(<code className="gsdk-code">ca.crt</code>) 준비</span></li>
+              <li className="flex gap-2"><span className="shrink-0 text-faint">4.</span><span>대상 장치의 IP·포트를 확인해 예제 코드에 설정</span></li>
+            </ol>
+          </div>
+
+          {tutorial.steps.length > 0 ? (
+            <nav className="mb-9 rounded-lg border border-edge bg-surface p-5" aria-label="진행 단계">
+              <p className="mb-3 text-sm font-medium text-secondary">진행 단계</p>
+              <ol className="grid grid-cols-2 gap-x-6 gap-y-1.5 max-[680px]:grid-cols-1">
+                {tutorial.steps.map((step) => (
+                  <li key={step.anchor}>
+                    <a href={`#${step.anchor}`} className="flex gap-2 text-[14px] leading-6 text-muted transition-colors hover:text-text">
+                      {step.num ? <span className="shrink-0 text-faint">{step.num}.</span> : null}
+                      <span>{step.title}</span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          ) : null}
+
           <TutorialBody tutorial={tutorial} />
         </article>
 

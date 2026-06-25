@@ -26,7 +26,7 @@ export default function GsdkPage() {
           <p className="mb-6 text-sm leading-6 text-muted">gRPC Gateway를 통해 BioStar 장치와 통신하는 개발 축입니다.</p>
           <nav className="space-y-1 text-[15px]">
             <Link className="block rounded-md px-2 py-1.5 text-secondary hover:bg-hover" href="/api">API Reference</Link>
-            <Link className="block rounded-md px-2 py-1.5 text-secondary hover:bg-hover" href="/reference">Examples</Link>
+            <Link className="block rounded-md px-2 py-1.5 text-secondary hover:bg-hover" href="/examples">Examples</Link>
           </nav>
         </aside>
         <section className="w-full max-w-[1540px] px-9 pb-20 pt-8 max-[820px]:px-5">
@@ -44,7 +44,7 @@ export default function GsdkPage() {
 
           <div className="mt-12 grid grid-cols-2 gap-4 max-[980px]:grid-cols-1">
             <HubCard href="/api" icon={<Code2 size={18} />} title="API Reference" description="Connect, Device, User, Access 같은 실제 G-SDK API와 메서드 그룹을 봅니다." />
-            <HubCard href="/reference" icon={<BookOpen size={18} />} title="Examples" description="장치 연결, 사용자 동기화, 이벤트 수집처럼 API를 조합하는 흐름을 봅니다." />
+            <HubCard href="/examples" icon={<BookOpen size={18} />} title="Examples" description="장치 연결, 사용자 동기화, 이벤트 수집처럼 API를 Python으로 조합하는 흐름을 봅니다." />
           </div>
 
           <section className="mt-14 rounded-lg border border-edge bg-surface p-5">
@@ -62,6 +62,7 @@ export default function GsdkPage() {
               ))}
             </div>
           </section>
+
         </section>
       </div>
     </main>

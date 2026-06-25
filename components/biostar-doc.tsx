@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CodeBlock } from "@/components/code-block";
+import { genCurl, genFetch } from "@/lib/biostar-examples";
 import type { BiostarApi, BiostarEndpoint, BiostarGroup, KeyValDesc } from "@/lib/biostar-doc";
 
 const METHOD_STYLES: Record<string, string> = {
@@ -62,6 +63,12 @@ export function BiostarEndpointBody({ endpoint }: { endpoint: BiostarEndpoint })
         <div className="bs-prose text-[15px] leading-7 text-muted" dangerouslySetInnerHTML={{ __html: e.descHtml }} />
       ) : null}
 
+      <section id="code" className="scroll-mt-24 space-y-3">
+        <h2 className="text-[20px] font-medium text-secondary">코드 예제</h2>
+        <CodeBlock code={genCurl(e)} lang="bash" label="cURL" />
+        <CodeBlock code={genFetch(e)} lang="javascript" label="JavaScript (fetch)" />
+      </section>
+
       <section id="parameters" className="scroll-mt-24 space-y-5">
         <ParamTable title="Path 파라미터" rows={e.pathParams} />
         <ParamTable title="Query 파라미터" rows={e.queryParams} />
@@ -73,14 +80,14 @@ export function BiostarEndpointBody({ endpoint }: { endpoint: BiostarEndpoint })
 
       {e.body ? (
         <section id="request" className="scroll-mt-24">
-          <h2 className="mb-3 text-[20px] font-medium text-secondary">Request body</h2>
+          <h2 className="mb-3 text-[20px] font-medium text-secondary">요청 본문</h2>
           <CodeBlock code={e.body} lang={e.bodyLang ?? "json"} label={`${e.bodyLang ?? "json"} · request`} />
         </section>
       ) : null}
 
       {e.responses.length > 0 ? (
         <section id="responses" className="scroll-mt-24 space-y-4">
-          <h2 className="text-[20px] font-medium text-secondary">Responses</h2>
+          <h2 className="text-[20px] font-medium text-secondary">응답</h2>
           {e.responses.map((r, i) => (
             <div key={r.name + i} className="space-y-2">
               <div className="flex flex-wrap items-center gap-2">

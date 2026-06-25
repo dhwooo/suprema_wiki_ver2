@@ -93,15 +93,51 @@ function sanitizeHtml(html: string): string {
     .replace(/(href|src)\s*=\s*("|')\s*javascript:[^"']*\2/gi, '$1=$2#$2');
 }
 
+// 마크다운 파이프 테이블이 한 줄(<p>| a | b | | --- | | c | d |</p>)로 뭉쳐 들어온 경우
+// 헤더 열 수 기준으로 행을 끊어 <table>로 복원합니다. (영어 원본/한국어 번역 공통 후처리)
+function fixPipeTables(html: string): string {
+  // 단일 <p> 블록(내부에 다른 </p> 없음) 중 파이프 + 구분선(---)을 포함한 것만 테이블로 변환
+  return html.replace(/<p>((?:(?!<\/p>)[\s\S])*?-{3,}(?:(?!<\/p>)[\s\S])*?)<\/p>/g, (full, inner: string) => {
+    if (!inner.includes("|")) return full;
+    const all = inner.split("|").map((s) => s.trim());
+    while (all.length && all[0] === "") all.shift();
+    while (all.length && all[all.length - 1] === "") all.pop();
+
+    const sepStart = all.findIndex((c) => /^:?-{3,}:?$/.test(c));
+    if (sepStart <= 0) return full;
+    const header = all.slice(0, sepStart).filter((c) => c !== "");
+    const n = header.length;
+    if (n === 0) return full;
+
+    let rest = all.slice(sepStart + n); // 구분선 셀 n개 건너뜀
+    if (rest[0] === "") rest = rest.slice(1); // 구분선 뒤 행 경계 빈 셀 제거
+
+    const rows: string[][] = [];
+    for (let i = 0; i < rest.length; ) {
+      const row = rest.slice(i, i + n);
+      if (row.length === 0) break;
+      while (row.length < n) row.push("");
+      rows.push(row);
+      i += n;
+      if (rest[i] === "") i += 1; // 행 경계 빈 셀 스킵
+    }
+    if (rows.length === 0) return full;
+
+    const thead = `<thead><tr>${header.map((c) => `<th>${c}</th>`).join("")}</tr></thead>`;
+    const tbody = `<tbody>${rows.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody>`;
+    return `<table>${thead}${tbody}</table>`;
+  });
+}
+
 // BS2 description은 이미 HTML, BSX description은 마크다운입니다. 포맷을 감지해 분기합니다.
 function richText(src: string | undefined | null): string {
   if (!src) return "";
   const text = String(src).replace(/\r\n/g, "\n").trim();
   if (!text) return "";
-  if (/<(p|h[1-6]|ul|ol|li|table|div|br|strong|pre|code|blockquote)\b/i.test(text)) {
-    return sanitizeHtml(text);
-  }
-  return mdToHtml(text);
+  const html = /<(p|h[1-6]|ul|ol|li|table|div|br|strong|pre|code|blockquote)\b/i.test(text)
+    ? sanitizeHtml(text)
+    : mdToHtml(text);
+  return fixPipeTables(html);
 }
 
 function mdToHtml(text: string): string {
@@ -308,6 +344,43 @@ function readCollection(product: BiostarProduct): PmItem & { info?: { name?: str
   return data.collection ?? data;
 }
 
+// 한국어 번역 오버레이. 원본 collection은 불변, 번역만 별도 파일로 머지합니다.
+type KoOverlay = {
+  groups?: Record<string, { title?: string; descHtml?: string }>;
+  endpoints?: Record<string, { name?: string; descHtml?: string; params?: Record<string, string> }>;
+};
+
+function loadKo(product: BiostarProduct): KoOverlay | null {
+  const file = path.join(CONTENT_DIR, `${product}.ko.json`);
+  if (!fs.existsSync(file)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(file, "utf8")) as KoOverlay;
+  } catch {
+    return null;
+  }
+}
+
+function applyKo(groups: BiostarGroup[], ko: KoOverlay): void {
+  for (const g of groups) {
+    const gk = ko.groups?.[g.slug];
+    if (gk?.title) g.title = gk.title;
+    if (gk?.descHtml) g.descHtml = fixPipeTables(gk.descHtml);
+    for (const e of g.endpoints) {
+      const ek = ko.endpoints?.[e.slug];
+      if (!ek) continue;
+      if (ek.name) e.name = ek.name;
+      if (ek.descHtml) e.descHtml = fixPipeTables(ek.descHtml);
+      if (ek.params) {
+        for (const arr of [e.pathParams, e.queryParams, e.headers]) {
+          for (const p of arr) {
+            if (ek.params[p.key]) p.desc = ek.params[p.key];
+          }
+        }
+      }
+    }
+  }
+}
+
 const cache: Partial<Record<BiostarProduct, BiostarApi>> = {};
 
 export function getBiostarApi(product: BiostarProduct): BiostarApi {
@@ -334,6 +407,9 @@ export function getBiostarApi(product: BiostarProduct): BiostarApi {
       endpoints,
     });
   }
+
+  const ko = loadKo(product);
+  if (ko) applyKo(groups, ko);
 
   const api: BiostarApi = {
     product,

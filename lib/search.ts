@@ -1,12 +1,12 @@
-import { docs } from "@/lib/docs";
 import { apiCollections, apiItems, getApiDetail } from "@/lib/api-reference";
 import { biostar2ApiGroups, biostar2Examples, biostarXApiGroups, biostarXExamples } from "@/lib/biostar-reference";
+import { tutorials } from "@/lib/tutorials";
 
 export type SearchEntry = {
   title: string;
   subtitle: string;
   href: string;
-  group: "API" | "Collection" | "Reference" | "BioStar 2" | "BioStar X";
+  group: "API" | "Example" | "Collection" | "BioStar 2" | "BioStar X";
   keywords: string; // 소문자 결합 검색 대상(메서드명 포함)
 };
 
@@ -29,6 +29,16 @@ export function getSearchEntries(): SearchEntry[] {
     });
   }
 
+  for (const tutorial of tutorials) {
+    entries.push({
+      title: tutorial.title,
+      subtitle: tutorial.description,
+      href: `/examples/${tutorial.slug}`,
+      group: "Example",
+      keywords: [tutorial.title, tutorial.description, tutorial.slug, ...tutorial.apis].join(" ").toLowerCase(),
+    });
+  }
+
   for (const collection of apiCollections) {
     entries.push({
       title: collection.title,
@@ -36,16 +46,6 @@ export function getSearchEntries(): SearchEntry[] {
       href: `/api#coll-${collection.slug}`,
       group: "Collection",
       keywords: [collection.title, collection.description, ...collection.apis].join(" ").toLowerCase(),
-    });
-  }
-
-  for (const doc of docs) {
-    entries.push({
-      title: doc.title,
-      subtitle: doc.description,
-      href: `/reference/${doc.slug}`,
-      group: "Reference",
-      keywords: [doc.title, doc.description, doc.category, doc.workflow, ...doc.tags].join(" ").toLowerCase(),
     });
   }
 

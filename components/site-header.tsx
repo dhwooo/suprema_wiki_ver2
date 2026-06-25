@@ -12,7 +12,7 @@ const navItems: { key: NavKey; label: string; href: string }[] = [
 ];
 
 const gsdkLinks = [
-  { label: "Guides", href: "/gsdk", description: "Gateway, gRPC, SDK 구조와 개념" },
+  { label: "Overview", href: "/gsdk", description: "Gateway, gRPC, SDK 구조" },
   { label: "API Reference", href: "/api", description: "서비스·메서드·타입 레퍼런스" },
   { label: "Examples", href: "/examples", description: "Python 단계별 사용 예제" },
 ];

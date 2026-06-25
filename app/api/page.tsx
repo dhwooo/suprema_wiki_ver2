@@ -42,9 +42,9 @@ export default function ApiPage() {
                 <h2 className="mb-2 text-2xl font-medium text-secondary">Collections</h2>
                 <p className="max-w-3xl text-[15px] leading-6 text-muted">목적별로 자주 함께 쓰이는 API 묶음입니다. 카드를 누르면 해당 묶음의 전체 색인으로 이동합니다.</p>
               </div>
-              <Link className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-secondary hover:text-text" href="/reference">
+              <Link className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-secondary hover:text-text" href="/examples">
                 <BookOpen size={15} />
-                사용 예 보기
+                예제 보기
               </Link>
             </div>
             <ApiCollectionsGrid />

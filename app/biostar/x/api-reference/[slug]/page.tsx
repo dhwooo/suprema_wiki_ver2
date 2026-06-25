@@ -33,9 +33,9 @@ export default async function BioStarXEndpointPage({ params }: PageProps) {
   if (!found) notFound();
   const { endpoint, group } = found;
 
-  const tocItems: TocItem[] = [{ id: "overview", label: "Overview" }, { id: "parameters", label: "Parameters" }];
-  if (endpoint.body) tocItems.push({ id: "request", label: "Request body" });
-  if (endpoint.responses.length > 0) tocItems.push({ id: "responses", label: "Responses" });
+  const tocItems: TocItem[] = [{ id: "overview", label: "개요" }, { id: "code", label: "코드 예제" }, { id: "parameters", label: "파라미터" }];
+  if (endpoint.body) tocItems.push({ id: "request", label: "요청 본문" });
+  if (endpoint.responses.length > 0) tocItems.push({ id: "responses", label: "응답" });
 
   return (
     <main className="min-h-screen bg-bg text-text">

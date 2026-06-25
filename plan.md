@@ -57,3 +57,33 @@
 ## 검증 결과
 - BS2 26 groups / 308 endpoints, BSX 26 groups / 315 endpoints
 - slug 유니크, path에서 baseUrl·호스트 제거 정상, desc 이중이스케이프 없음
+
+---
+
+# 라이트/다크 토글 (완료)
+- next-themes + components/theme-provider.tsx, theme-toggle.tsx(헤더), layout Provider 래핑
+- globals.css semantic 토큰(bg/surface/raised/hover/active/edge/edge-strong/text/secondary/muted/faint/link), :root,.dark 기본 + .light 스왑
+- 31개 파일 564곳 다크 하드코딩 → 토큰 (병렬 5 에이전트), 잔존 0
+- build/lint OK
+
+# 한국어 번역 (완료)
+- 방식: 원문 추출(scripts/biostar-ko-extract.ts) → 30청크 병렬 번역(executor) → 머지(biostar-ko-merge.ts) → content/biostar/{bs2,bsx}.ko.json 오버레이
+- 파서(lib/biostar-doc.ts) loadKo/applyKo로 원본 collection 불변 머지
+- 커버리지 100%: bs2 308/308, bsx 315/315, 그룹명·endpoint명·설명·파라미터 설명 전부 한국어, 용어집 일관
+- UI 레이블 한국어화(요청 본문/응답/파라미터/개요)
+- fixPipeTables: 마크다운 파이프 테이블이 평문으로 뭉친 것 → <table> 복원 (bs2 155, bsx 106 endpoint)
+- _kosrc/_kotrans는 중간산물(.gitignore)
+
+# 사이드바 accordion (완료)
+- components/biostar-sidebar.tsx(server, 데이터) + biostar-sidebar-nav.tsx(client accordion)
+- endpoint 623개 전부 펼침 → 26 그룹 헤더 접기, 활성 endpoint 그룹만 기본 펼침, method 색상 표시
+
+# Examples Postman 자동 생성 (완료)
+- lib/biostar-examples.ts: genCurl/genFetch(endpoint→cURL·JS fetch), getExampleScenarios(인증 + 그룹별 CRUD)
+- endpoint 상세 페이지: "코드 예제" 섹션(cURL+JS) 자동 추가 (전체 623개)
+- examples 페이지 재구성: 7 시나리오(인증/사용자/장치/액세스그룹/도어/카드/이벤트) × 단계별 코드, 각 단계 → API Reference 연결
+- components/biostar-examples-view.tsx
+
+# 남은 선택 작업
+- lib/search.ts 검색을 placeholder 대신 실제 623 endpoint로 연결
+- lib/biostar-reference.ts placeholder 정리(landing은 아직 의존)

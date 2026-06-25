@@ -27,7 +27,7 @@ const products: Product[] = [
     icon: Network,
     href: "/gsdk",
     links: [
-      { label: "Guides", href: "/gsdk" },
+      { label: "Overview", href: "/gsdk" },
       { label: "API Reference", href: "/api" },
       { label: "Examples", href: "/examples" },
     ],
@@ -129,7 +129,7 @@ export default function Home() {
           </div>
           <p className="mt-6 flex items-center gap-2 text-sm text-muted">
             <BookOpen size={15} />
-            더 깊은 개념은 <Link href="/gsdk" className="text-secondary hover:text-text">G-SDK Guides</Link>에서 확인하세요.
+            G-SDK 전체 구조는 <Link href="/gsdk" className="text-secondary hover:text-text">G-SDK Overview</Link>에서 확인하세요.
           </p>
         </section>
       </section>
